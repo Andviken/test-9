@@ -1,0 +1,919 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DA40NG Checklist</title>
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    background-color: #101010;
+    color: #f0f0f0;
+}
+#main, .checklist-view {
+    display: none;
+    padding: 20px;
+}
+#home {
+    padding: 20px;
+}
+button, .checklist-btn {
+    width: 100%;
+    padding: 15px;
+    margin: 12px 0;
+    font-size: 18px;
+    background: #222;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    text-align: left;
+    transition: background 0.2s;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+button:hover, .checklist-btn:hover {
+    background: #333;
+}
+.checklist-btn.checked {
+    background-color: #4caf50;
+    color: black;
+}
+.item {
+    background: #1e1e1e;
+    padding: 16px;
+    margin: 12px 0;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: background 0.3s;
+}
+.item:hover {
+    background: #2a2a2a;
+}
+.item.checked {
+    background: #8bc34a;
+    color: black;
+}
+.checkmark {
+    width: 22px;
+    height: 22px;
+    background: #666;
+    border-radius: 50%;
+}
+.item.checked .checkmark {
+    background: #0f0;
+}
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.topbar button {
+    width: auto;
+    padding: 10px 15px;
+    background: #333;
+    border-radius: 6px;
+}
+
+
+body.night {
+    background-color: #1a0000;
+    color: #ffcccc;
+}
+body.night .item {
+    background-color: #330000;
+    color: #ffcccc;
+}
+body.night .item.checked {
+    background-color: #660000;
+    color: #fff;
+}
+body.night button, body.night .checklist-btn {
+    background: #400000;
+    color: #fff;
+}
+
+
+.checklist-btn.completed {
+    background-color: #4caf50;
+    color: black;
+}
+.checklist-btn.inprogress {
+    background-color: orange;
+    color: black;
+}
+.checklist-btn.notstarted {
+    background-color: #555;
+    color: white;
+}
+
+.item.next {
+    background-color: orange !important;
+    color: black !important;
+    outline: none;
+}
+
+
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #0a0a0a;
+    color: #ffffff;
+}
+#home h1 {
+    font-size: 26px;
+    margin-bottom: 20px;
+    color: #00e6e6;
+}
+.progress-track {
+    height: 8px;
+    background-color: #1a1a1a;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 25px;
+}
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background-color: #00cccc;
+    transition: width 0.5s ease;
+}
+.checklist-btn {
+    background-color: #111;
+    color: white;
+    border: 2px solid #00cccc;
+    border-radius: 14px;
+    padding: 20px;
+    margin: 15px 0;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    transition: background 0.2s ease;
+}
+.checklist-btn:hover {
+    background-color: #1a1a1a;
+}
+
+
+.item {
+    background: #1a1a1a;
+    padding: 18px;
+    margin: 12px 0;
+    border-radius: 10px;
+    font-size: 18px;
+    display: flex;
+    justify-content: space-between;
+    transition: background 0.2s;
+}
+.item:hover {
+    background: #222;
+}
+.item.checked {
+    background: #00cc66;
+    color: black;
+}
+.item.next {
+    background-color: orange !important;
+    color: black !important;
+}
+
+
+@keyframes popChecked {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.06); }
+    100% { transform: scale(1); }
+}
+.item.checked {
+    animation: popChecked 0.2s ease-in-out;
+}
+</style>
+</head>
+<body>
+
+<div id="disclaimerOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;
+color:#fff;z-index:9999;padding:30px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:left;font-size:15px;">
+  <div style="max-width:600px;">
+    <h2 style="color:#00e6e6;">Disclaimer</h2>
+    <p>Dette sjekklisteverktøyet for DA40NG er utviklet som et personlig hjelpemiddel for piloter og luftfartsinteresserte.
+    Det er ikke autorisert eller godkjent av noen luftfartsmyndighet, flyprodusent eller operatør.</p>
+    <p>Innholdet er basert på generell prosedyrerekkefølge for DA40NG, men kan avvike fra flyets offisielle Pilot Operating Handbook (POH).</p>
+    <p>Brukeren er selv ansvarlig for korrekt gjennomføring av sjekklister og for å følge produsentens anbefalinger, operasjonelle manualer og gjeldende regelverk.</p>
+    <p>Utvikler påtar seg intet ansvar for feil, mangler eller konsekvenser av bruk. Det tas forbehold om feil og endringer i innholdet.</p>
+    <p>Denne appen skal kun brukes som et supplement til pilotens egne forberedelser og aldri som eneste kilde til flyoperativ informasjon.</p>
+    <button onclick="acceptDisclaimer()" style="margin-top:20px;padding:10px 20px;font-size:16px;background-color:#00e6e6;border:none;color:#000;border-radius:4px;">Godta og fortsett</button>
+  </div>
+</div>
+
+<div id="nightButtonContainer" style="position:fixed;top:10px;right:10px;z-index:1000;">
+<button onclick="toggleNightMode()" id="nightModeBtn" style="width:42px;height:42px;border:none;border-radius:50%;background:#222;color:#fff;font-size:20px;cursor:pointer;">🌙</button>
+</div>
+<div id="home">
+<h1>DA40NG CHECKLIST</h1>
+<div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+    <h2>DA40NG Sjekkliste</h2>
+    <button onclick="resetAll()" title="Reset" style="
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: none;
+    background: #222;
+    color: #00cccc;
+    font-size: 22px;
+    box-shadow: 0 0 8px rgba(0,255,255,0.3);
+    cursor: pointer;
+    z-index: 1000;">⟳</button>
+<button class="checklist-btn" onclick="openChecklist(0)" id="btn0">Before Start</button>
+<button class="checklist-btn" onclick="openChecklist(1)" id="btn1">Starting Engine</button>
+<button class="checklist-btn" onclick="openChecklist(2)" id="btn2">Taxi</button>
+<button class="checklist-btn" onclick="openChecklist(3)" id="btn3">Ground Check</button>
+<button class="checklist-btn" onclick="openChecklist(4)" id="btn4">Line Up</button>
+<button class="checklist-btn" onclick="openChecklist(5)" id="btn5">After Takeoff</button>
+<button class="checklist-btn" onclick="openChecklist(6)" id="btn6">Before Landing</button>
+<button class="checklist-btn" onclick="openChecklist(7)" id="btn7">After Landing</button>
+<button class="checklist-btn" onclick="openChecklist(8)" id="btn8">Shutdown</button>
+
+</div>
+<div id="main">
+<div class="checklist-view" id="cl0">
+<div class="topbar">
+<button onclick="goHome()">← Tilbake</button>
+<h3>Before Start</h3>
+</div>
+<div class="item" onclick="toggleItem(this, 0, 0)"><span>A/C doc. / Pre-flight / Pax brief – COMPLETED</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 0, 1)"><span>Pilot Cover / Chocks / Control Lock – REMOVED</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 0, 2)"><span>Tow Bar – REMOVED</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 0, 3)"><span>Rudder Pedals – ADJUSTED</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 0, 4)"><span>Seatbelts – FASTENED</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 0, 5)"><span>Parking Brake – SET</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 0, 6)"><span>Front Canopy – POS 1 or 2</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 0, 7)"><span>Rear Door – CLOSED</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 0, 8)"><span>Before Start Flow Check – COMPLETED</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 0, 9)"><span>Electric Master – ON</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 0, 10)"><span>Engine Fire On Ground – BRIEFED</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 0, 11)"><span>Flight Controls – CHECKED</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 0, 12)"><span>G1000 – POWERED & ACK.</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 0, 13)"><span>Fuel – CHECKED & SET</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 0, 14)"><span>Fuel Temperature – CHECKED</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 0, 15)"><span>Position Lights – ON</span><div class="checkmark"></div></div>
+</div>
+<div class="checklist-view" id="cl1">
+<div class="topbar">
+<button onclick="goHome()">← Tilbake</button>
+<h3>Starting Engine</h3>
+</div>
+<div class="item" onclick="toggleItem(this, 1, 0)"><span>Engine Master – ON</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 1, 1)"><span>Annunciations – CHECKED</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 1, 2)"><span>Start Key – START</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 1, 3)"><span>Annunciations / Engine Instruments – CHECKED</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 1, 4)"><span>RPM 710 +/-30 – CHECKED</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 1, 5)"><span>Avionics Master – ON</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 1, 6)"><span>Engine Warm Up (as req.) – <1000 RPM</span><div class="checkmark"></div></div>
+<div class="item" onclick="showNotepad()"><span>ATIS & Clearance notepad</span><div class="checkmark"></div></div>
+
+<div class="item" onclick="toggleItem(this, 1, 7)"><span>ATIS – RECEIVED</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 1, 8)"><span>Standby Instruments – CHECKED</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 1, 9)"><span>Altimeters – SET & CHECKED</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 1, 10)"><span>Clearance – RECEIVED</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 1, 11)"><span>Instrument Setup / Nav. Aids – SET</span><div class="checkmark"></div></div>
+</div>
+<div class="checklist-view" id="cl2">
+<div class="topbar">
+<button onclick="goHome()">← Tilbake</button>
+<h3>Taxi</h3>
+</div>
+<div class="item" onclick="toggleItem(this, 2, 0)"><span>Brakes – CHECKED</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 2, 1)"><span>Flight Instruments – CHECKED</span><div class="checkmark"></div></div>
+</div>
+<div class="checklist-view" id="cl3">
+<div class="topbar">
+<button onclick="goHome()">← Tilbake</button>
+<h3>Ground Check</h3>
+</div>
+<div class="item" onclick="toggleItem(this, 3, 0)"><span>Parking Brake – SET</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 3, 1)"><span>Annunciations – CHECKED</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 3, 2)"><span>Engine Instruments Normal Range – CHECKED</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 3, 3)"><span>Circuit Breakers – CHECKED</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 3, 4)"><span>Flaps – TEST & SET</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 3, 5)"><span>Trim – SET</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 3, 6)"><span>Fuel Valve – NORMAL</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 3, 7)"><span>Power Lever (move governor) – 2100 RPM --> IDLE</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 3, 8)"><span>ECU-Test – COMPLETED</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 3, 9)"><span>Voltmeter – A & B --> AUTO</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 3, 10)"><span>Departure & Engine Fail Procedure – BRIEFED</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 3, 11)"><span>Transponder – SET</span><div class="checkmark"></div></div>
+</div>
+<div class="checklist-view" id="cl4">
+<div class="topbar">
+<button onclick="goHome()">← Tilbake</button>
+<h3>Line Up</h3>
+</div>
+<div class="item" onclick="toggleItem(this, 4, 0)"><span>Lights – AS REQ.</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 4, 1)"><span>Fuel Pumps – ON</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 4, 2)"><span>Front Canopy / Windows – CLOSED</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 4, 3)"><span>Pilot Heat – AS REQ.</span><div class="checkmark"></div></div>
+</div>
+<div class="checklist-view" id="cl5">
+<div class="topbar">
+<button onclick="goHome()">← Tilbake</button>
+<h3>After Takeoff</h3>
+</div>
+<div class="item" onclick="toggleItem(this, 5, 0)"><span>Lights – AS REQ.</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 5, 1)"><span>Fuel Pumps – OFF</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 5, 2)"><span>Flaps – UP</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 5, 3)"><span>Engine Instruments – CHECKED</span><div class="checkmark"></div></div>
+</div>
+<div class="checklist-view" id="cl6">
+<div class="topbar">
+<button onclick="goHome()">← Tilbake</button>
+<h3>Before Landing</h3>
+</div>
+<div class="item" onclick="toggleItem(this, 6, 0)"><span>Approach Brief – GIVEN</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 6, 1)"><span>Altimeters – SET</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 6, 2)"><span>Seat Belts – CHECKED</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 6, 3)"><span>Fuel Valve – NORMAL</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 6, 4)"><span>Parking Brake – RELEASED</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 6, 5)"><span>Fuel Pumps – ON</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 6, 6)"><span>Lights – AS REQ.</span><div class="checkmark"></div></div>
+</div>
+<div class="checklist-view" id="cl7">
+<div class="topbar">
+<button onclick="goHome()">← Tilbake</button>
+<h3>After Landing</h3>
+</div>
+<div class="item" onclick="toggleItem(this, 7, 0)"><span>Flaps – UP</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 7, 1)"><span>Pilot Heat – OFF</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 7, 2)"><span>Alternate Air – OFF</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 7, 3)"><span>Fuel Pumps – OFF</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 7, 4)"><span>Lights – AS REQ.</span><div class="checkmark"></div></div>
+</div>
+<div class="checklist-view" id="cl8">
+<div id="shutdownTimerContainer" style="margin-bottom: 20px;">
+<div id="shutdownTimerBar" style="height: 10px; background: red; width: 100%; border-radius: 6px; transition: width 1s linear;"></div>
+<div id="shutdownTimer" style="font-size: 22px; font-weight: bold; padding: 10px; border-radius: 8px; margin-bottom: 15px; display: none;"></div>
+<div class="topbar">
+<button onclick="goHome()">← Tilbake</button>
+<h3>Shutdown</h3>
+</div>
+<div class="item" onclick="toggleItem(this, 8, 0)"><span>Parking Brake – SET</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 8, 1)"><span>Power Lever – IDLE (1 min)</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 8, 2)"><span>Transponder – 7000</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 8, 3)"><span>Avionics Master – OFF</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 8, 4)"><span>Engine Master – OFF</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 8, 5)"><span>Lights – OFF</span><div class="checkmark"></div></div>
+<div class="item" onclick="toggleItem(this, 8, 6)"><span>Electric Master – 10 sec. --> OFF</span><div class="checkmark"></div></div>
+</div>
+
+</div>
+
+<script>
+let canvas, ctx, drawing = false;
+
+function showNotepad() {
+  document.getElementById('cl1').style.display = 'none';
+  document.getElementById('notepadSection').style.display = 'block';
+  setupCanvas();
+}
+
+function showChecklist() {
+  document.getElementById('notepadSection').style.display = 'none';
+  document.getElementById('cl1').style.display = 'block';
+}
+
+function setupCanvas() {
+  canvas = document.getElementById("noteCanvas");
+  ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Mouse events
+  canvas.addEventListener("mousedown", () => drawing = true);
+  canvas.addEventListener("mouseup", () => drawing = false);
+  canvas.addEventListener("mousemove", (e) => {
+    if (drawing) draw(e.clientX, e.clientY);
+  });
+  canvas.addEventListener("mouseout", () => drawing = false);
+
+  // Touch events
+  canvas.addEventListener("touchstart", (e) => {
+    drawing = true;
+    const t = e.touches[0];
+    draw(t.clientX, t.clientY);
+    e.preventDefault();
+  }, { passive: false });
+
+  canvas.addEventListener("touchmove", (e) => {
+    if (!drawing) return;
+    const t = e.touches[0];
+    draw(t.clientX, t.clientY);
+    e.preventDefault();
+  }, { passive: false });
+
+  canvas.addEventListener("touchend", () => drawing = false);
+  canvas.addEventListener("touchcancel", () => drawing = false);
+}
+
+function draw(x, y) {
+  const rect = canvas.getBoundingClientRect();
+  ctx.strokeStyle = "#00e6e6";
+  ctx.lineWidth = 3;
+  ctx.lineCap = "round";
+  ctx.lineTo(x - rect.left, y - rect.top);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(x - rect.left, y - rect.top);
+}
+
+function clearCanvas() {
+  if (ctx) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.beginPath();
+  }
+}
+</script>
+
+
+
+<script>
+let canvas, ctx, drawing = false;
+
+function showNotepad() {
+  document.getElementById('cl1').style.display = 'none';
+  document.getElementById('notepadSection').style.display = 'block';
+  setupCanvas();
+}
+
+function showChecklist() {
+  document.getElementById('notepadSection').style.display = 'none';
+  document.getElementById('cl1').style.display = 'block';
+}
+
+function setupCanvas() {
+  canvas = document.getElementById("noteCanvas");
+  ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Mouse events
+  canvas.addEventListener("mousedown", () => drawing = true);
+  canvas.addEventListener("mouseup", () => drawing = false);
+  canvas.addEventListener("mousemove", (e) => {
+    if (drawing) draw(e.clientX, e.clientY);
+  });
+  canvas.addEventListener("mouseout", () => drawing = false);
+
+  // Touch events
+  canvas.addEventListener("touchstart", (e) => {
+    drawing = true;
+    const t = e.touches[0];
+    draw(t.clientX, t.clientY);
+    e.preventDefault();
+  }, { passive: false });
+
+  canvas.addEventListener("touchmove", (e) => {
+    if (!drawing) return;
+    const t = e.touches[0];
+    draw(t.clientX, t.clientY);
+    e.preventDefault();
+  }, { passive: false });
+
+  canvas.addEventListener("touchend", () => drawing = false);
+  canvas.addEventListener("touchcancel", () => drawing = false);
+}
+
+function draw(x, y) {
+  const rect = canvas.getBoundingClientRect();
+  ctx.strokeStyle = "#00e6e6";
+  ctx.lineWidth = 3;
+  ctx.lineCap = "round";
+  ctx.lineTo(x - rect.left, y - rect.top);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(x - rect.left, y - rect.top);
+}
+
+function clearCanvas() {
+  if (ctx) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.beginPath();
+  }
+}
+</script>
+
+
+
+
+<script>
+let canvas, ctx, drawing = false;
+
+function showNotepad() {
+  document.getElementById('cl1').style.display = 'none';
+  document.getElementById('notepadSection').style.display = 'block';
+  setupCanvas();
+}
+
+function showChecklist() {
+  document.getElementById('notepadSection').style.display = 'none';
+  document.getElementById('cl1').style.display = 'block';
+}
+
+function setupCanvas() {
+  canvas = document.getElementById("noteCanvas");
+  ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Mouse events
+  canvas.addEventListener("mousedown", () => drawing = true);
+  canvas.addEventListener("mouseup", () => drawing = false);
+  canvas.addEventListener("mousemove", (e) => {
+    if (drawing) draw(e.clientX, e.clientY);
+  });
+  canvas.addEventListener("mouseout", () => drawing = false);
+
+  // Touch events
+  canvas.addEventListener("touchstart", (e) => {
+    drawing = true;
+    const t = e.touches[0];
+    draw(t.clientX, t.clientY);
+    e.preventDefault();
+  }, { passive: false });
+
+  canvas.addEventListener("touchmove", (e) => {
+    if (!drawing) return;
+    const t = e.touches[0];
+    draw(t.clientX, t.clientY);
+    e.preventDefault();
+  }, { passive: false });
+
+  canvas.addEventListener("touchend", () => drawing = false);
+  canvas.addEventListener("touchcancel", () => drawing = false);
+}
+
+function draw(x, y) {
+  const rect = canvas.getBoundingClientRect();
+  ctx.strokeStyle = "#00e6e6";
+  ctx.lineWidth = 3;
+  ctx.lineCap = "round";
+  ctx.lineTo(x - rect.left, y - rect.top);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(x - rect.left, y - rect.top);
+}
+
+function clearCanvas() {
+  if (ctx) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.beginPath();
+  }
+}
+</script>
+
+
+
+<div id="notepadSection" style="display:none;padding:20px;">
+  <button onclick="document.getElementById('notepadSection').style.display='none'; document.getElementById('cl1').style.display='block';"
+    style="position: fixed; top: 20px; left: 20px; width: 36px; height: 36px; font-size: 20px;
+    background-color: #111; border: 1px solid #00ffff; color: #00ffff;
+    border-radius: 50%; z-index: 100;">←</button>
+  <h2 style="text-align:center; color:#00e6e6;">ATIS & Clearance Notepad</h2>
+  <canvas id="noteCanvas" width="100%" height="400"
+    style="display:block; margin:auto; background:#111; border:1px solid #00e6e6; touch-action: none;"></canvas>
+  <button onclick="clearCanvas()" style="margin:auto; display:block;">Tøm</button>
+</div>
+
+<script>
+let canvas, ctx, drawing = false;
+
+function showNotepad() {
+  document.getElementById('cl1').style.display = 'none';
+  document.getElementById('notepadSection').style.display = 'block';
+  setupCanvas();
+}
+
+function showChecklist() {
+  document.getElementById('notepadSection').style.display = 'none';
+  document.getElementById('cl1').style.display = 'block';
+}
+
+function setupCanvas() {
+  canvas = document.getElementById("noteCanvas");
+  ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Mouse events
+  canvas.addEventListener("mousedown", () => drawing = true);
+  canvas.addEventListener("mouseup", () => drawing = false);
+  canvas.addEventListener("mousemove", (e) => {
+    if (drawing) draw(e.clientX, e.clientY);
+  });
+  canvas.addEventListener("mouseout", () => drawing = false);
+
+  // Touch events
+  canvas.addEventListener("touchstart", (e) => {
+    drawing = true;
+    const t = e.touches[0];
+    draw(t.clientX, t.clientY);
+    e.preventDefault();
+  }, { passive: false });
+
+  canvas.addEventListener("touchmove", (e) => {
+    if (!drawing) return;
+    const t = e.touches[0];
+    draw(t.clientX, t.clientY);
+    e.preventDefault();
+  }, { passive: false });
+
+  canvas.addEventListener("touchend", () => drawing = false);
+  canvas.addEventListener("touchcancel", () => drawing = false);
+}
+
+function draw(x, y) {
+  const rect = canvas.getBoundingClientRect();
+  ctx.strokeStyle = "#00e6e6";
+  ctx.lineWidth = 3;
+  ctx.lineCap = "round";
+  ctx.lineTo(x - rect.left, y - rect.top);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(x - rect.left, y - rect.top);
+}
+
+function clearCanvas() {
+  if (ctx) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.beginPath();
+  }
+}
+</script>
+
+
+</body>
+</html>
+
+
+<script>
+let canvas, ctx, drawing = false;
+
+function showNotepad() {
+  document.getElementById('cl1').style.display = 'none';
+  document.getElementById('notepadSection').style.display = 'block';
+  setupCanvas();
+}
+
+function showChecklist() {
+  document.getElementById('notepadSection').style.display = 'none';
+  document.getElementById('cl1').style.display = 'block';
+}
+
+function setupCanvas() {
+  canvas = document.getElementById("noteCanvas");
+  ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Mouse events
+  canvas.addEventListener("mousedown", () => drawing = true);
+  canvas.addEventListener("mouseup", () => drawing = false);
+  canvas.addEventListener("mousemove", (e) => {
+    if (drawing) draw(e.clientX, e.clientY);
+  });
+  canvas.addEventListener("mouseout", () => drawing = false);
+
+  // Touch events
+  canvas.addEventListener("touchstart", (e) => {
+    drawing = true;
+    const t = e.touches[0];
+    draw(t.clientX, t.clientY);
+    e.preventDefault();
+  }, { passive: false });
+
+  canvas.addEventListener("touchmove", (e) => {
+    if (!drawing) return;
+    const t = e.touches[0];
+    draw(t.clientX, t.clientY);
+    e.preventDefault();
+  }, { passive: false });
+
+  canvas.addEventListener("touchend", () => drawing = false);
+  canvas.addEventListener("touchcancel", () => drawing = false);
+}
+
+function draw(x, y) {
+  const rect = canvas.getBoundingClientRect();
+  ctx.strokeStyle = "#00e6e6";
+  ctx.lineWidth = 3;
+  ctx.lineCap = "round";
+  ctx.lineTo(x - rect.left, y - rect.top);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(x - rect.left, y - rect.top);
+}
+
+function clearCanvas() {
+  if (ctx) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.beginPath();
+  }
+}
+</script>
+
+
+<script>
+let canvas, ctx, drawing = false;
+
+function showNotepad() {
+  document.getElementById('cl1').style.display = 'none';
+  document.getElementById('notepadSection').style.display = 'block';
+  setupCanvas();
+}
+
+function showChecklist() {
+  document.getElementById('notepadSection').style.display = 'none';
+  document.getElementById('cl1').style.display = 'block';
+}
+
+function setupCanvas() {
+  canvas = document.getElementById("noteCanvas");
+  ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Mouse events
+  canvas.addEventListener("mousedown", () => drawing = true);
+  canvas.addEventListener("mouseup", () => drawing = false);
+  canvas.addEventListener("mousemove", (e) => {
+    if (drawing) draw(e.clientX, e.clientY);
+  });
+  canvas.addEventListener("mouseout", () => drawing = false);
+
+  // Touch events
+  canvas.addEventListener("touchstart", (e) => {
+    drawing = true;
+    const t = e.touches[0];
+    draw(t.clientX, t.clientY);
+    e.preventDefault();
+  }, { passive: false });
+
+  canvas.addEventListener("touchmove", (e) => {
+    if (!drawing) return;
+    const t = e.touches[0];
+    draw(t.clientX, t.clientY);
+    e.preventDefault();
+  }, { passive: false });
+
+  canvas.addEventListener("touchend", () => drawing = false);
+  canvas.addEventListener("touchcancel", () => drawing = false);
+}
+
+function draw(x, y) {
+  const rect = canvas.getBoundingClientRect();
+  ctx.strokeStyle = "#00e6e6";
+  ctx.lineWidth = 3;
+  ctx.lineCap = "round";
+  ctx.lineTo(x - rect.left, y - rect.top);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(x - rect.left, y - rect.top);
+}
+
+function clearCanvas() {
+  if (ctx) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.beginPath();
+  }
+}
+</script>
+
+
+<script>
+let canvas, ctx, drawing = false;
+
+function showNotepad() {
+  document.getElementById('cl1').style.display = 'none';
+  document.getElementById('notepadSection').style.display = 'block';
+  setupCanvas();
+}
+
+function showChecklist() {
+  document.getElementById('notepadSection').style.display = 'none';
+  document.getElementById('cl1').style.display = 'block';
+}
+
+function setupCanvas() {
+  canvas = document.getElementById("noteCanvas");
+  ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Mouse events
+  canvas.addEventListener("mousedown", () => drawing = true);
+  canvas.addEventListener("mouseup", () => drawing = false);
+  canvas.addEventListener("mousemove", (e) => {
+    if (drawing) draw(e.clientX, e.clientY);
+  });
+  canvas.addEventListener("mouseout", () => drawing = false);
+
+  // Touch events
+  canvas.addEventListener("touchstart", (e) => {
+    drawing = true;
+    const t = e.touches[0];
+    draw(t.clientX, t.clientY);
+    e.preventDefault();
+  }, { passive: false });
+
+  canvas.addEventListener("touchmove", (e) => {
+    if (!drawing) return;
+    const t = e.touches[0];
+    draw(t.clientX, t.clientY);
+    e.preventDefault();
+  }, { passive: false });
+
+  canvas.addEventListener("touchend", () => drawing = false);
+  canvas.addEventListener("touchcancel", () => drawing = false);
+}
+
+function draw(x, y) {
+  const rect = canvas.getBoundingClientRect();
+  ctx.strokeStyle = "#00e6e6";
+  ctx.lineWidth = 3;
+  ctx.lineCap = "round";
+  ctx.lineTo(x - rect.left, y - rect.top);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(x - rect.left, y - rect.top);
+}
+
+function clearCanvas() {
+  if (ctx) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.beginPath();
+  }
+}
+</script>
+
+
+<script>
+let canvas, ctx, drawing = false;
+
+function showNotepad() {
+  document.getElementById('cl1').style.display = 'none';
+  document.getElementById('notepadSection').style.display = 'block';
+  setupCanvas();
+}
+
+function showChecklist() {
+  document.getElementById('notepadSection').style.display = 'none';
+  document.getElementById('cl1').style.display = 'block';
+}
+
+function setupCanvas() {
+  canvas = document.getElementById("noteCanvas");
+  ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Mouse events
+  canvas.addEventListener("mousedown", () => drawing = true);
+  canvas.addEventListener("mouseup", () => drawing = false);
+  canvas.addEventListener("mousemove", (e) => {
+    if (drawing) draw(e.clientX, e.clientY);
+  });
+  canvas.addEventListener("mouseout", () => drawing = false);
+
+  // Touch events
+  canvas.addEventListener("touchstart", (e) => {
+    drawing = true;
+    const t = e.touches[0];
+    draw(t.clientX, t.clientY);
+    e.preventDefault();
+  }, { passive: false });
+
+  canvas.addEventListener("touchmove", (e) => {
+    if (!drawing) return;
+    const t = e.touches[0];
+    draw(t.clientX, t.clientY);
+    e.preventDefault();
+  }, { passive: false });
+
+  canvas.addEventListener("touchend", () => drawing = false);
+  canvas.addEventListener("touchcancel", () => drawing = false);
+}
+
+function draw(x, y) {
+  const rect = canvas.getBoundingClientRect();
+  ctx.strokeStyle = "#00e6e6";
+  ctx.lineWidth = 3;
+  ctx.lineCap = "round";
+  ctx.lineTo(x - rect.left, y - rect.top);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(x - rect.left, y - rect.top);
+}
+
+function clearCanvas() {
+  if (ctx) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.beginPath();
+  }
+}
+</script>
